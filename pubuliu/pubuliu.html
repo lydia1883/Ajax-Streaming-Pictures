@@ -1,0 +1,158 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>无标题文档</title>
+<style>
+
+*{margin:0;padding:0;}
+ul,li{list-style:none;}
+#ul1{
+	
+     width:1240px;
+	 margin:100px auto 0;	
+	
+	}
+#ul1 li{
+	
+  width:300px;	
+  float:left;
+  margin-right:10px;
+	}	
+#ul1 li div {
+
+border:1px solid #000;
+padding:20px;
+margin-bottom:10px;	
+	}	
+	
+#ul1 li div img{
+	
+ width:260px;
+ display:block;
+	
+	}
+
+</style>
+<script src="JSON.js">
+</script>
+<script src="ajax1.js">
+</script>
+
+
+<script>
+window.onload=function(){
+	
+	
+	var oUl=document.getElementById("ul1");
+	var aLi=oUl.getElementsByTagName("li");
+	var iLen=aLi.length;
+	var iPage=1;
+	var b=true;
+	
+	//获取初始化据
+	getList();
+	function getList(){
+		
+		ajax('get','getpics.php','cpage='+iPage,function(data){	
+			var data=JSON.parse(data);
+			if(!data.length){	
+			   return;	
+		    }
+			for(var i=0;i<data.length;i++){
+				
+				//
+				var _index=getShort();
+				
+				var oDiv=document.createElement("div");
+				var oImg=document.createElement("img");
+				
+				oImg.src=data[i].preview;
+				oImg.style.width='260px';
+				
+				oImg.style.height=(225/data[i].width)*data[i].height+'px';
+				oDiv.appendChild(oImg);
+				var oP=document.createElement("p");
+				oP.innerHTML=data[i].title;
+				oDiv.appendChild(oP);
+				
+				aLi[_index].appendChild(oDiv);
+				}
+		 
+		        b=true;
+		 
+	 	});
+		
+		
+	}
+	
+	window.onscroll=function(){
+			
+	  var _index=getShort();	
+	  var oLi=aLi[_index];
+	  	
+	  var scrollTop=document.documentElement.scrollTop||document.body.scrollTop;	
+	  if(getTop(oLi)+oLi.offsetHeight<document.documentElement.clientHeight+scrollTop)
+	  { 
+	    if(b){
+	   	    b=false;
+			iPage++;
+			getList();
+		
+		}
+	  }	
+   };
+   
+   function getShort(){
+		var index=0;
+		var ih=aLi[index].offsetHeight;
+		for(var i=1;i<iLen;i++){
+			if(aLi[i].offsetHeight<ih){
+				
+				index=i;
+				ih=aLi[i].offsetHeight;
+				
+				}
+			
+		}
+	
+		return index;
+	}
+	 function getTop(obj){	   
+	  var iTop=0; 
+	  while(obj){
+		  
+		  obj+=obj.offsetTop;
+		  obj=obj.offsetParent;
+		  } 
+		  
+	  return iTop;
+	  }	
+		
+	
+	
+};
+		
+
+
+  
+	
+	
+	
+	
+</script>
+
+</head>
+
+<body>
+
+<ul id="ul1">
+     <li></li>
+     <li></li>
+     <li></li>
+     <li></li>
+    
+</ul>
+
+</body>
+</html>
